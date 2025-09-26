@@ -1,5 +1,7 @@
 import PostList from '@/app/components/postList.tsx';
 import { getAllPostIds, parsePostData } from '@/app/lib/posts.ts';
+import Title from '@/app/components/title.tsx';
+import { chalkFont } from '@/app/lib/tools.tsx';
 
 export default function Home() {
   const postIds = getAllPostIds();
@@ -12,7 +14,8 @@ export default function Home() {
     };
   });
 
-  return (
+  return (<>
+    <Title value="Articles"/>
     <PostList posts={posts} />
-  );
+  </>);
 }

@@ -1,6 +1,6 @@
 import { getAllPostIds, parsePostData } from '@/app/lib/posts.ts';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { Title } from '@/app/lib/blog-utils.tsx';
+import Title from '@/app/components/title.tsx';
 import { Tex } from '@/app/lib/math.tsx';
 import { notFound } from 'next/navigation';
 

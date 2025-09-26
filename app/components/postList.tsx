@@ -43,7 +43,7 @@ export default function PostList({posts}: PostListProps) {
       }).map(({ id, frontmatter }) => {
         return (
           <li key={id} className="flex items-center gap-2">
-            <Pentagon className="w-4 h-4 text-[#F5F5F5]" />
+            <Pentagon className="w-4 h-4" />
             <PostPreview key={id} postId={id} frontmatter={frontmatter}/>
           </li>
         );
