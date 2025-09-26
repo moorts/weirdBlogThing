@@ -7,6 +7,15 @@ import Link from 'next/link';
 import { pinBoardFont } from '@/app/lib/tools.tsx';
 import { categories } from '@/app/lib/constants.tsx';
 
+/**
+ * Pin component that renders a movable/draggable thumbtack. Clicking the pin sets the URLSearchParam ?category to the text prop. Holding ctrl allows one to drag the pin with the mouse.
+ *
+ * Props:
+ * - text: string - Pin links to /?category={text}
+ * - position: {x: number, y: number} - position of the pin.
+ * - onMove: (dx, dy) => void - callback to update position.
+ * - ref: Ref for parent component to access dimensions of the rendered div.
+ */
 function Pin({text, position, onMove, ref}) {
   const [
     lastCoordinates,
@@ -102,6 +111,10 @@ type Position = {
   y: number,
 }
 
+/**
+ * Sidebar component. Imitates a pinboard.
+ * Spawns a pin per category of posts and randomly positions them on the sidebar.
+ */
 export default function Sidebar() {
   const containerRef = useRef<HTMLDivElement>(null);
 
