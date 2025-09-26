@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import Link from 'next/link';
 
-function Pin({text, position, onMove, linkEnabled}) {
+function Pin({text, position, onMove, linkEnabled, ref}) {
   const [
     lastCoordinates,
     setLastCoordinates
@@ -81,6 +81,7 @@ function Pin({text, position, onMove, linkEnabled}) {
       }}
     >
       <div
+        ref={ref}
         className="flex flex-col group-hover:bg-blue-700 w-fit items-center"
       >
         <div className="w-6 h-6 bg-red-600 rounded-full border-2 border-gray-800"></div>
@@ -93,22 +94,33 @@ function Pin({text, position, onMove, linkEnabled}) {
 }
 
 export default function Sidebar() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const pinRef = useRef<HTMLDivElement>(null);
+
   const [position, setPosition] = useState({
     x: 0,
     y: 0
   });
 
   function handleMove(dx, dy) {
+    if (!containerRef.current || !pinRef.current) return;
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const pinRect = pinRef.current.getBoundingClientRect();
+
+    const newX = Math.max(0, Math.min(position.x + dx, containerRect.width - 2 * pinRect.width));
+    const newY = Math.max(0, Math.min(position.y + dy, containerRect.height - 2 * pinRect.height));
+
     setPosition({
-      x: position.x + dx,
-      y: position.y + dy,
+      x: newX,
+      y: newY,
     });
   }
 
   return (
-          <div className="w-1/7 min-h-screen border-t-3 border-l-3 border-b-3 border-[#5A3A22] bg-[#8B5E3C] p-4">
+          <div ref={containerRef} className="w-1/7 min-h-screen border-t-3 border-l-3 border-b-3 border-[#5A3A22] bg-[#8B5E3C] p-4">
             Sidebar
-            <Pin text="test" position={position} onMove={handleMove} linkEnabled={true}/>
+            <Pin text="test" position={position} onMove={handleMove} linkEnabled={false} ref={pinRef}/>
           </div>
   );
 }
