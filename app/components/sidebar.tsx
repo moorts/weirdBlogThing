@@ -7,14 +7,14 @@ import Link from 'next/link';
 import { pinBoardFont } from '@/app/lib/tools.tsx';
 import { categories } from '@/app/lib/constants.tsx';
 
-function Pin({text, position, onMove, linkEnabled, ref}) {
+function Pin({text, position, onMove, ref}) {
   const [
     lastCoordinates,
     setLastCoordinates
   ] = useState(null);
 
   function handlePointerDown(e) {
-    if (linkEnabled) {
+    if (!e.ctrlKey) {
       return;
     }
 
@@ -27,7 +27,7 @@ function Pin({text, position, onMove, linkEnabled, ref}) {
   }
 
   function handlePointerMove(e) {
-    if (linkEnabled) {
+    if (!e.ctrlKey) {
       return;
     }
 
@@ -46,7 +46,7 @@ function Pin({text, position, onMove, linkEnabled, ref}) {
   }
 
   function handlePointerUp(e) {
-    if (linkEnabled) {
+    if (!e.ctrlKey) {
       return;
     }
 
@@ -55,8 +55,8 @@ function Pin({text, position, onMove, linkEnabled, ref}) {
   }
 
   function onClick(e) {
-    if (linkEnabled) {
-      return;
+    if (e.ctrlKey) {
+      e.preventDefault();
     }
   }
 
@@ -72,13 +72,9 @@ function Pin({text, position, onMove, linkEnabled, ref}) {
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      onClick={linkEnabled ? null : (e) => e.preventDefault()}
+      onClick={onClick}
       style={{
-        // width: 100,
-        // height: 100,
-        cursor: linkEnabled ? 'pointer' : 'grab',
         position: 'absolute',
-        // border: '1px solid black',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -145,7 +141,7 @@ export default function Sidebar() {
           <div ref={containerRef} className="flex flex-col w-1/7 min-h-screen border-t-3 border-l-3 border-b-3 border-[#5A3A22] bg-[#8B5E3C]">
             <div className={`absolute self-center text-2xl mt-2 ${pinBoardFont.className}`}>Categories</div>
             {Array.from(positions.entries().map(([i, position]) => 
-              <Pin key={i} text={categories[i]} position={position} onMove={(dx: number, dy: number) => handleMove(i, dx, dy)} linkEnabled={false} ref={pinRefs[i]}/>
+              <Pin key={i} text={categories[i]} position={position} onMove={(dx: number, dy: number) => handleMove(i, dx, dy)} ref={pinRefs[i]}/>
             ))}
           </div>
   );
