@@ -1,8 +1,9 @@
 "use client";
 
 import { useRef, useState } from 'react';
-
 import Link from 'next/link';
+
+import { pinBoardFont } from '@/app/lib/tools.tsx';
 
 function Pin({text, position, onMove, linkEnabled, ref}) {
   const [
@@ -75,19 +76,19 @@ function Pin({text, position, onMove, linkEnabled, ref}) {
         justifyContent: 'center',
         alignItems: 'center',
         transform: `translate(
-          ${position.x}px,
-          ${position.y}px
+        ${position.x}px,
+        ${position.y}px
         )`,
       }}
     >
       <div
         ref={ref}
-        className="flex flex-col group-hover:bg-blue-700 w-fit items-center"
+        className="flex flex-col w-fit items-center"
       >
         <div className="w-6 h-6 bg-red-600 rounded-full border-2 border-gray-800"></div>
         
         <div className="w-0.5 h-3 bg-gray-800 "></div>
-        <p className="group-hover:bg-blue-700">{text}</p>
+        <p className={pinBoardFont.className}>{text}</p>
       </div>
     </Link>
   );
@@ -105,11 +106,15 @@ export default function Sidebar() {
   function handleMove(dx, dy) {
     if (!containerRef.current || !pinRef.current) return;
 
+
     const containerRect = containerRef.current.getBoundingClientRect();
     const pinRect = pinRef.current.getBoundingClientRect();
 
-    const newX = Math.max(0, Math.min(position.x + dx, containerRect.width - 2 * pinRect.width));
-    const newY = Math.max(0, Math.min(position.y + dy, containerRect.height - 2 * pinRect.height));
+    const offsetX = pinRect.left - containerRect.left;
+    const offsetY = pinRect.top - containerRect.top;
+
+    const newX = Math.max(-offsetX, Math.min(position.x + dx, containerRect.width - pinRect.width));
+    const newY = Math.max(-offsetY, Math.min(position.y + dy, containerRect.height - pinRect.height));
 
     setPosition({
       x: newX,
@@ -118,9 +123,9 @@ export default function Sidebar() {
   }
 
   return (
-          <div ref={containerRef} className="w-1/7 min-h-screen border-t-3 border-l-3 border-b-3 border-[#5A3A22] bg-[#8B5E3C] p-4">
-            Sidebar
-            <Pin text="test" position={position} onMove={handleMove} linkEnabled={false} ref={pinRef}/>
+          <div ref={containerRef} className="flex flex-col w-1/7 min-h-screen border-t-3 border-l-3 border-b-3 border-[#5A3A22] bg-[#8B5E3C]">
+            <div className={`absolute self-center text-2xl mt-2 ${pinBoardFont.className}`}>Categories</div>
+            <Pin text="Math" position={position} onMove={handleMove} linkEnabled={false} ref={pinRef}/>
           </div>
   );
 }
