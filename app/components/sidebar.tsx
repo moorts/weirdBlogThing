@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import Link from 'next/link';
 
 import { pinBoardFont } from '@/app/lib/tools.tsx';
+import { categories } from '@/app/lib/constants.tsx';
 
 function Pin({text, position, onMove, linkEnabled, ref}) {
   const [
@@ -96,36 +97,37 @@ function Pin({text, position, onMove, linkEnabled, ref}) {
 
 export default function Sidebar() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const pinRef = useRef<HTMLDivElement>(null);
+  const pinRefs = categories.map(cat => useRef<HTMLDivElement>(null));
 
-  const [position, setPosition] = useState({
-    x: 0,
-    y: 0
-  });
+  const [positions, setPositions] = useState(categories.map(cat => {
+    return {
+      x: 0,
+      y: 0
+    };
+  }));
 
-  function handleMove(dx, dy) {
-    if (!containerRef.current || !pinRef.current) return;
+  function handleMove(i, dx, dy) {
+    if (!containerRef.current || !pinRefs[i].current) return;
 
 
     const containerRect = containerRef.current.getBoundingClientRect();
-    const pinRect = pinRef.current.getBoundingClientRect();
+    const pinRect = pinRefs[i].current.getBoundingClientRect();
 
     const offsetX = pinRect.left - containerRect.left;
     const offsetY = pinRect.top - containerRect.top;
 
-    const newX = Math.max(-offsetX, Math.min(position.x + dx, containerRect.width - pinRect.width));
-    const newY = Math.max(-offsetY, Math.min(position.y + dy, containerRect.height - pinRect.height));
+    const newX = Math.max(-offsetX, Math.min(positions[i].x + dx, containerRect.width - pinRect.width));
+    const newY = Math.max(-offsetY, Math.min(positions[i].y + dy, containerRect.height - pinRect.height));
 
-    setPosition({
-      x: newX,
-      y: newY,
-    });
+    setPositions([...positions.slice(0, i), {x: newX, y: newY}, ...positions.slice(i+1)]);
   }
 
   return (
           <div ref={containerRef} className="flex flex-col w-1/7 min-h-screen border-t-3 border-l-3 border-b-3 border-[#5A3A22] bg-[#8B5E3C]">
             <div className={`absolute self-center text-2xl mt-2 ${pinBoardFont.className}`}>Categories</div>
-            <Pin text="Math" position={position} onMove={handleMove} linkEnabled={false} ref={pinRef}/>
+            {positions.entries().map(([i, position]) => {
+              return <Pin key={i} text={categories[i]} position={position} onMove={(dx: number, dy: number) => handleMove(i, dx, dy)} linkEnabled={false} ref={pinRefs[i]}/>;
+            })}
           </div>
   );
 }
