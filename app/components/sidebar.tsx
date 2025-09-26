@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 import { pinBoardFont } from '@/app/lib/tools.tsx';
@@ -59,9 +60,14 @@ function Pin({text, position, onMove, linkEnabled, ref}) {
     }
   }
 
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category");
+  const pinColor = (category === text) ? "bg-green-600" : "bg-red-600";
+  const target = (category === text) ? "/" : `/?category=${text}`;
+
   return (
     <Link
-      href="/blog/riemann_roch"
+      href={target}
       className="w-fit group block"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -86,7 +92,7 @@ function Pin({text, position, onMove, linkEnabled, ref}) {
         ref={ref}
         className="flex flex-col w-fit items-center"
       >
-        <div className="w-6 h-6 bg-red-600 rounded-full border-2 border-gray-800"></div>
+        <div className={`w-6 h-6 ${pinColor} rounded-full border-2 border-gray-800`}></div>
         
         <div className="w-0.5 h-3 bg-gray-800 "></div>
         <p className={pinBoardFont.className}>{text}</p>
@@ -95,16 +101,29 @@ function Pin({text, position, onMove, linkEnabled, ref}) {
   );
 }
 
+type Position = {
+  x: number,
+  y: number,
+}
+
 export default function Sidebar() {
   const containerRef = useRef<HTMLDivElement>(null);
+
   const pinRefs = categories.map(cat => useRef<HTMLDivElement>(null));
 
-  const [positions, setPositions] = useState(categories.map(cat => {
-    return {
-      x: 0,
-      y: 0
-    };
-  }));
+  const [positions, setPositions] = useState<Position[]>([]);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setPositions(Array.from(categories
+                              .entries()
+                              .map(([i, cat]) => {
+                                return { x: rect.width * (Math.random() * 0.7), y: rect.height * (Math.random() * 0.6 + 0.1) };
+                              })));
+    }
+  }, []);
+
 
   function handleMove(i, dx, dy) {
     if (!containerRef.current || !pinRefs[i].current) return;
@@ -125,9 +144,9 @@ export default function Sidebar() {
   return (
           <div ref={containerRef} className="flex flex-col w-1/7 min-h-screen border-t-3 border-l-3 border-b-3 border-[#5A3A22] bg-[#8B5E3C]">
             <div className={`absolute self-center text-2xl mt-2 ${pinBoardFont.className}`}>Categories</div>
-            {positions.entries().map(([i, position]) => {
-              return <Pin key={i} text={categories[i]} position={position} onMove={(dx: number, dy: number) => handleMove(i, dx, dy)} linkEnabled={false} ref={pinRefs[i]}/>;
-            })}
+            {Array.from(positions.entries().map(([i, position]) => 
+              <Pin key={i} text={categories[i]} position={position} onMove={(dx: number, dy: number) => handleMove(i, dx, dy)} linkEnabled={false} ref={pinRefs[i]}/>
+            ))}
           </div>
   );
 }
