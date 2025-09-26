@@ -3,12 +3,7 @@
 import Link from 'next/link';
 import { Star, Pentagon } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-
-import { postsDirectory } from './lib/posts.ts';
-import path from 'path';
-import { categories } from '@/app/lib/constants.tsx';
 import { chalkFont } from '@/app/lib/tools.tsx';
-
 
 
 function PostPreview({postId, frontmatter}) {
