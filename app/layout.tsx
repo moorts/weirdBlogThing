@@ -32,7 +32,7 @@ export default function RootLayout({
         <div className="flex flex-col md:flex-row justify-center items-start min-h-screen p-4 bg-[url('/images/books.jpg')]">
           <Sidebar />
 
-          <div className="w-4/7 min-h-screen flex flex-col border-3 border-[#5A3A22] gap-4 max-w-4xl p-8 bg-[#1B1B1B] text-[#F5F5F5] shadow-lg text-left items-center">
+          <div className="w-4/7 min-h-screen flex flex-col border-3 border-[#5A3A22] gap-4 max-w-4xl p-8 bg-[#1B1B1B] text-[#F5F5F5] shadow-lg text-left">
             {children}
           </div>
         </div>
