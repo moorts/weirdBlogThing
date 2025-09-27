@@ -152,7 +152,7 @@ export default function Sidebar() {
 
   return (
           <div ref={containerRef} className="flex flex-col w-1/7 min-h-screen border-t-3 border-l-3 border-b-3 border-[#5A3A22] bg-[#8B5E3C]">
-            <div className={`absolute self-center text-2xl mt-2 ${pinBoardFont.className}`}>Categories</div>
+            <div className={`absolute self-center text-3xl mt-2 ${pinBoardFont.className}`}>Categories</div>
             {Array.from(positions.entries().map(([i, position]) => 
               <Pin key={i} text={categories[i]} position={position} onMove={(dx: number, dy: number) => handleMove(i, dx, dy)} ref={pinRefs[i]}/>
             ))}
