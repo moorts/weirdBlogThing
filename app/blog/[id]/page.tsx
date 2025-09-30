@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import rehypeStarryNight from 'rehype-starry-night';
 import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeAddClasses from 'rehype-add-classes';
+import Paper from '@/app/components/paper.tsx';
 
 import '@/app/code_colors.css';
 
@@ -28,12 +29,19 @@ export default async function Page({
     <Title value={title} />
     <MDXRemote
       source={content}
-      components={{Tex: Tex}}
+      components={{
+        Tex: Tex,
+        pre: (props) => (
+          <Paper>
+            <pre {...props} />
+          </Paper>
+        ),
+      }}
       options={{
         mdxOptions: {
           rehypePlugins: [
             rehypeStarryNight,
-            [rehypeAddClasses, { pre: "w-full bg-[#fffaf0] text-black p-2 rounded shadow-inner shadow-xl" }],
+            [rehypeAddClasses, { pre: "" }],
           ]  
         }
       }}
