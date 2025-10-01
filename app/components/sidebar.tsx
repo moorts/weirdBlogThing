@@ -136,10 +136,10 @@ function Pin({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        className="flex flex-col w-fit items-center"
+        className="flex flex-col w-fit items-center group"
       >
         <div
-          className={`w-6 h-6 ${pinColor} rounded-full border-2 border-gray-800`}
+          className={`w-6 h-6 ${pinColor} group-hover:shadow-[0_22px_15px_rgba(0,0,0,0.9)] rounded-full border-2 border-gray-800`}
         ></div>
 
         <div className="w-0.5 h-3 bg-gray-800 "></div>
